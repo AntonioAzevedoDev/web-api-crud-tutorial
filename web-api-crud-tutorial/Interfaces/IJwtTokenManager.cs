@@ -5,6 +5,7 @@ namespace Beginners_CRUD_EvtApi.Interfaces
     public interface IJwtTokenManager
     {
         string Authenticate(string userName, string password);
+        string AuthenticateWhithoutExpiration(string userName, string password);
         bool CreateNewUser(UserCredential user);
     }
 }

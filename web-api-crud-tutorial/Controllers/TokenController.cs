@@ -2,6 +2,7 @@
 using Beginners_CRUD_EvtApi.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using web_api_crud_tutorial.Models;
 
 namespace Beginners_CRUD_EvtApi.Controllers
 {
@@ -24,6 +25,17 @@ namespace Beginners_CRUD_EvtApi.Controllers
             var token = new TokenModel(stringToken);
             return Ok(token);
         }
-        
+
+        [AllowAnonymous]
+        [HttpPost("WhithoutExpiration")]
+        public IActionResult AuthenticateWhithoutExpiration(string userName, string password)
+        {
+            var stringToken = _tokenManager.AuthenticateWhithoutExpiration(userName, password);
+            if (string.IsNullOrEmpty(stringToken))
+                return Unauthorized();
+            var token = new TokenWEModel(stringToken);
+            return Ok(token);
+        }
+
     }
 }
