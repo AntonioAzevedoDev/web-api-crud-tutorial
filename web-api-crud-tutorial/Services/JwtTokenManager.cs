@@ -40,6 +40,30 @@ namespace Beginners_CRUD_EvtApi.Services
 
             return tokenHandler.WriteToken(token);
         }
+
+        public string AuthenticateWhithoutExpiration(string userName, string password)
+        {
+            if (!_userRepository.Authentication(userName, password))
+                return null;
+
+            var key = _configuration.GetValue<string>("JwtConfig:Key");
+            var keyBytes = Encoding.ASCII.GetBytes(key);
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+
+            var tokenDescriptor = new SecurityTokenDescriptor()
+            {
+                Subject = new ClaimsIdentity(new Claim[]
+                {
+                    new Claim(ClaimTypes.NameIdentifier, userName)
+                }),
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(keyBytes), SecurityAlgorithms.HmacSha256Signature)
+            };
+
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+
+            return tokenHandler.WriteToken(token);
+        }
         public bool CreateNewUser(UserCredential user)
         {
             _userRepository.CreateUser(user);
